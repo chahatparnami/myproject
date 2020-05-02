@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  dbts:
+    image: mysql:5.7
+    volumes:
+      - db1.2:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: chahat
+      MYSQL_PASSWORD: redhat
+      MYSQL_DATABASE: mydb
+
+  app:
+    image: known
+    depends_on:
+      - dbts
+    volumes:
+      - db2.1:/var/www/html
+    environment:
+      KNOWN_DB_HOST: dbts
+      KNOWN_DB_USER: chahat
+      KNOWN_DB_PASSWORD: redhat
+      KNOWN_DB_NAME: mydb
+
+  web:
+    image: nginx
+    volumes:
+      - cpnginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    ports:
+      - 433:433
+      - 8080:80
+    environment:
+      VIRTUAL_HOST: known.site.com
+
+volumes:
+  db1.2:
+  db2.1:
+  cpnginx:
